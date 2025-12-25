@@ -9,6 +9,8 @@ export default function Student() {
     const paperstyle = { padding: '50px 20px', width: 600, margin: "20px auto" }
     const[name,setName]=React.useState('');
     const[address,setAddress]=React.useState('');
+    const[students,setStudents]=React.useState([]); 
+    const classes= React.useState('');
     const handleClick=async()=>{
         const student={name,address};
         console.log(student)
@@ -20,6 +22,14 @@ export default function Student() {
         console.log("New Student added")
     } )      
   }
+  React.useEffect(()=>{
+    fetch("http://localhost:8080/student/getAll")
+    .then(res=>res.json())
+    .then(result=>{
+      setStudents(result);
+
+    })
+  },[])
   return (
     <Container maxWidth="sm">
         <Paper sx={paperstyle}>
