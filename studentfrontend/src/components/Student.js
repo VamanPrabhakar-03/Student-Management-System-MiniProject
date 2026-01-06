@@ -5,31 +5,31 @@ import TextField from '@mui/material/TextField';
 import * as React from 'react';
 import { Button } from '@mui/material';
 
+
 export default function Student() {
     const paperstyle = { padding: '50px 20px', width: 600, margin: "20px auto" }
     const[name,setName]=React.useState('');
     const[address,setAddress]=React.useState('');
     const[students,setStudents]=React.useState([]); 
     const classes= React.useState('');
-    const handleClick=async()=>{
-        const student={name,address};
-        console.log(student)
-        fetch("http://localhost:8080/student/add",{
-        method:"POST",
-        headers:{"Content-Type":"application/json"},
-        body:JSON.stringify(student)
-    }).then(()=>{
-        console.log("New Student added")
-    } )      
-  }
-  React.useEffect(()=>{
-    fetch("http://localhost:8080/student/getAll")
-    .then(res=>res.json())
-    .then(result=>{
-      setStudents(result);
+    const handleClick = async () => {
+  const student = { name, address };
 
-    })
-  },[])
+  await fetch("http://localhost:8080/student/add", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify(student)
+  });
+
+  // Fetch updated list
+  fetch("http://localhost:8080/student/getAll")
+    .then(res => res.json())
+    .then(result => setStudents(result));
+
+  setName('');
+  setAddress('');
+};
+
   return (
     <Container maxWidth="sm">
         <Paper sx={paperstyle}>
@@ -59,6 +59,19 @@ export default function Student() {
         </Button>
       </Box>
       </Paper>
+      <h2>Students List</h2>
+<Paper elevation={3} sx={{ padding: 2 }}>
+  {students.length === 0 ? (
+    <p>No students found</p>
+  ) : (
+    students.map((student, index) => (
+      <Paper key={index} sx={{ margin: 1, padding: 1 }}>
+        <p><b>Name:</b> {student.name}</p>
+        <p><b>Address:</b> {student.address}</p>
+      </Paper>
+    ))
+  )}
+</Paper>
     </Container>
   );
 }
